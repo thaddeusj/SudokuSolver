@@ -1,0 +1,9 @@
+﻿<Window x:Class="Sudoku_Solver.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MainWindow" Height="315" Width="385" ResizeMode="NoResize">
+    <Grid x:Name="grid">
+        <Button x:Name="save" Content="Save Sudoku" HorizontalAlignment="Left" Height="30" Margin="285,210,0,0" VerticalAlignment="Top" Width="80" Click="save_Click"/>
+        <Button x:Name="solve" Content="Solve Sudoku" HorizontalAlignment="Left" Height="30" Margin="285,240,0,0" VerticalAlignment="Top" Width="80" Click="solve_Click"/>
+    </Grid>
+</Window>
