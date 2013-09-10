@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Sudoku_Solver
 {
-    class Triple<T> : Tuple<T, T, T> where T : IEquatable<T>
+    public class Triple<T> : Tuple<T, T, T> where T : IEquatable<T>
     {
 
         public Triple(T item1, T item2, T item3) : base(item1, item2, item3) { }
