@@ -10,16 +10,18 @@ namespace Sudoku_Solver
     {
 
         List<DancingLinksColumnHeader> columns;
-        public List<Triple<int>> rows;
-
+        public List<SudokuRowHeader> rows;
+        Dictionary<Triple<int>, SudokuRowHeader> rowLookUp;
 
         public DancingLinks(SudokuGrid s)
         {
+            rowLookUp = new Dictionary<Triple<int>, SudokuRowHeader>();
+
 
             if (s.Validate())
             {
                 columns = new List<DancingLinksColumnHeader>();
-                rows = new List<Triple<int>>();
+                rows = new List<SudokuRowHeader>();
 
 
                 //Initialise blank Sudoku Grid.
@@ -37,7 +39,9 @@ namespace Sudoku_Solver
 
                         for (int k = 1; k <= 9; k++)
                         {
-                            rows.Add(new Triple<int>(i, j, k));
+                            SudokuRowHeader r = new SudokuRowHeader(new Triple<int>(i, j, k));
+                            rows.Add(r);
+                            rowLookUp.Add(new Triple<int>(i, j, k), r);
                         }
                     }
                 }
@@ -59,6 +63,21 @@ namespace Sudoku_Solver
 
                             column.firstEntry.up = column.firstEntry;
                             column.firstEntry.down = column.firstEntry;
+
+                            if (rowLookUp.ContainsKey(new Triple<int>(column.constraintNum.Item1, column.constraintNum.Item2, content)))
+                            {
+                                rowLookUp[new Triple<int>(column.constraintNum.Item1, column.constraintNum.Item2, content)].firstNode.left.right = column.firstEntry;
+                                rowLookUp[new Triple<int>(column.constraintNum.Item1, column.constraintNum.Item2, content)].firstNode.left = column.firstEntry;
+                            }
+                            else
+                            {
+                                SudokuRowHeader r = new SudokuRowHeader(new Triple<int>(column.constraintNum.Item1, column.constraintNum.Item2, content));
+                                rows.Add(r);
+                                rowLookUp.Add(new Triple<int>(column.constraintNum.Item1, column.constraintNum.Item2, content), r);
+
+                                r.firstNode = column.firstEntry;
+                            }
+
                         }
                         else
                         {
@@ -67,7 +86,21 @@ namespace Sudoku_Solver
 
                             DancingLinksNode curNode = column.firstEntry;
 
+                            if (rowLookUp.ContainsKey(new Triple<int>(column.constraintNum.Item1, column.constraintNum.Item2, 1)))
+                            {
+                                rowLookUp[new Triple<int>(column.constraintNum.Item1, column.constraintNum.Item2, 1)].firstNode.left.right = curNode;
+                                rowLookUp[new Triple<int>(column.constraintNum.Item1, column.constraintNum.Item2, 1)].firstNode.left = curNode;
+                            }
+                            else
+                            {
+                                SudokuRowHeader r = new SudokuRowHeader(new Triple<int>(column.constraintNum.Item1, column.constraintNum.Item2, 1));
+                                rows.Add(r);
+                                rowLookUp.Add(new Triple<int>(column.constraintNum.Item1, column.constraintNum.Item2, 1), r);
 
+                                r.firstNode = curNode;
+                            }
+
+                            
                             for (int i = 2; i <= 9; i++)
                             {
                                 curNode.down = new DancingLinksNode(column, column.constraintNum.Item1, column.constraintNum.Item2, i);
@@ -78,6 +111,20 @@ namespace Sudoku_Solver
                                 {
                                     column.firstEntry.up = curNode;
                                     curNode.down = column.firstEntry;
+                                }
+
+                                if (rowLookUp.ContainsKey(new Triple<int>(column.constraintNum.Item1, column.constraintNum.Item2, i)))
+                                {
+                                    rowLookUp[new Triple<int>(column.constraintNum.Item1, column.constraintNum.Item2, i)].firstNode.left.right = curNode;
+                                    rowLookUp[new Triple<int>(column.constraintNum.Item1, column.constraintNum.Item2, i)].firstNode.left = curNode;
+                                }
+                                else
+                                {
+                                    SudokuRowHeader r = new SudokuRowHeader(new Triple<int>(column.constraintNum.Item1, column.constraintNum.Item2, i));
+                                    rows.Add(r);
+                                    rowLookUp.Add(new Triple<int>(column.constraintNum.Item1, column.constraintNum.Item2, i), r);
+
+                                    r.firstNode = curNode;
                                 }
                             }
                         }
@@ -251,173 +298,7 @@ namespace Sudoku_Solver
                     }
 
                 }
-
-                //Row Linking. Eek. WOW this is inefficient. Desperately need to refactor.
-                for (int i = 1; i <= 9; i++)
-                {
-                    for (int j = 1; j <= 9; j++)
-                    {
-                        for (int k = 1; k <= 9; k++)
-                        {
-
-                            DancingLinksNode curNode = null;
-                            DancingLinksNode firstNode = null;
-
-                            
-
-                            foreach (DancingLinksColumnHeader col in columns)
-                            {
-                                switch (col.type)
-                                {
-                                    case DancingLinksColumnHeader.ColumnType.Cell:
-
-                                        if (col.constraintNum.Item1 != i || col.constraintNum.Item2 != j) continue;
-
-                                        if (curNode == null)
-                                        {
-
-                                            curNode = col.firstEntry;
-
-                                            while(curNode.row.Item3 != k)
-                                            {
-                                                curNode = curNode.down;
-                                            }
-
-                                            firstNode = curNode;
-                                        }
-
-                                        else
-                                        {
-                                            DancingLinksNode tempNode = col.firstEntry;
-
-                                            while (tempNode.row.Item3 != k)
-                                            {
-                                                tempNode = tempNode.down;
-                                            }
-
-                                            curNode.right = tempNode;
-                                            tempNode.left = curNode;
-                                            curNode = tempNode;
-                                        }
-
-                                        break;
-
-                                    case DancingLinksColumnHeader.ColumnType.Column:
-
-                                        if (col.constraintNum.Item1 != j || col.constraintNum.Item2 != k) continue;
-
-                                        if (curNode == null)
-                                        {
-                                            curNode = col.firstEntry;
-
-                                            while (curNode.row.Item1 != i)
-                                            {
-                                                curNode = curNode.down;
-                                            }
-
-                                            firstNode = curNode;
-
-                                        }
-                                        else
-                                        {
-                                            DancingLinksNode tempNode = col.firstEntry;
-
-                                            while (tempNode.row.Item1 != i)
-                                            {
-                                                tempNode = tempNode.down;
-                                            }
-
-                                            curNode.right = tempNode;
-                                            tempNode.left = curNode;
-                                            curNode = tempNode;
-                                        }
-
-
-                                        break;
-
-                                    case DancingLinksColumnHeader.ColumnType.Row:
-
-                                        if (col.constraintNum.Item1 != i || col.constraintNum.Item2 != k) continue;
-
-                                        if (curNode == null)
-                                        {
-                                            curNode = col.firstEntry;
-
-                                            while (curNode.row.Item2 != j)
-                                            {
-                                                curNode = curNode.down;
-                                            }
-
-                                            firstNode = curNode;
-
-                                        }
-                                        else
-                                        {
-                                            DancingLinksNode tempNode = col.firstEntry;
-
-                                            while (tempNode.row.Item2 != j)
-                                            {
-                                                tempNode = tempNode.down;
-                                            }
-
-                                            curNode.right = tempNode;
-                                            tempNode.left = curNode;
-                                            curNode = tempNode;
-                                        }
-
-
-                                        break;
-
-                                    case DancingLinksColumnHeader.ColumnType.Square:
-
-
-                                        bool isInSquare = false;
-                                        int squareX = col.constraintNum.Item1 % 3 - 1;
-                                        if (squareX < 0) squareX += 3;
-                                        int squareY = (col.constraintNum.Item1 - (squareX + 1)) / 3;
-
-                                        if (i > squareX * 3 && i <= squareX * 3 + 3 && j > squareY * 3 && j <= squareY * 3 + 3) isInSquare = true;
-                                        
-                                        if(!isInSquare) continue;
-
-
-                                        if (curNode == null)
-                                        {
-                                            curNode = col.firstEntry;
-
-                                            while (curNode.row.Item2 != j || curNode.row.Item1 != i)
-                                            {
-                                                curNode = curNode.down;
-                                            }
-
-                                            firstNode = curNode;
-
-                                        }
-                                        else
-                                        {
-                                            DancingLinksNode tempNode = col.firstEntry;
-
-                                            while (tempNode.row.Item2 != j || tempNode.row.Item1 != i)
-                                            {
-                                                tempNode = tempNode.down;
-                                            }
-
-                                            curNode.right = tempNode;
-                                            tempNode.left = curNode;
-                                            curNode = tempNode;
-                                        }
-
-                                        break;
-                                }
-
-                            }
-
-                            firstNode.left = curNode;
-                            curNode.right = firstNode;
-                        }
-                    }
-                }
-
+                
             }
         }
 
@@ -467,7 +348,7 @@ namespace Sudoku_Solver
                             curRemNode = curRemNode.right;
                         }
 
-                        rows.Remove(curRowPivot.row);
+                        rows.Remove(rowLookUp[curRowPivot.row]);
                         #endregion
 
                         //curRowPivot.right.left = curRowPivot.left;
@@ -550,7 +431,7 @@ namespace Sudoku_Solver
                                 curAddNode = curAddNode.right;
                             }
 
-                            rows.Add(curRowPivot.row);
+                            rows.Add(rowLookUp[curRowPivot.row]);
                             #endregion
 
                             //curRowPivot.right.left = curRowPivot.left;

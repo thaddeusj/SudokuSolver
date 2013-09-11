@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Sudoku_Solver
 {
-    class DancingLinksColumnHeader
+    public class DancingLinksColumnHeader
     {
 
         public enum ColumnType {Row,Column,Square,Cell};

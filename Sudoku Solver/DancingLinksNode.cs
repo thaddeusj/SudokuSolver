@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Sudoku_Solver
 {
-    class DancingLinksNode
+    public class DancingLinksNode
     {
 
         //Same Column
