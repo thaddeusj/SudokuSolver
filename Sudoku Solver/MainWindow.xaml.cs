@@ -228,8 +228,8 @@ namespace Sudoku_Solver
             //}
 
 
-            DancingLinks d = new DancingLinks(gr);
 
+            SudokuDLinks.SudokuDLinksAlg s = new SudokuDLinks.SudokuDLinksAlg(gr);
 
 
             //d.dancingLinksAlg();
