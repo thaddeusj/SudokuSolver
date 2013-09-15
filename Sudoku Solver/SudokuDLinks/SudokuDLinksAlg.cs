@@ -13,6 +13,8 @@ namespace Sudoku_Solver.SudokuDLinks
             //Initialise the constraint matrix.
 
             List<SudokuRowHeader> tempRows = new List<SudokuRowHeader>();
+            columns = new List<AbstractDLinks.ColumnHeader>();
+            rows = new List<AbstractDLinks.RowHeader>();
 
             for(int i = 1; i <= 9; i++)
                 for (int j = 1; j <= 9; j++)
@@ -29,13 +31,16 @@ namespace Sudoku_Solver.SudokuDLinks
                                 {
                                     int content;
 
-                                    if (s.boxes[i, j].Text.Length > 0 && int.TryParse(s.boxes[i, j].Text, out content))
+                                    if (int.TryParse(s.boxes[i - 1, j - 1].Text, out content))
                                     {
                                         SudokuRowHeader newRow = new SudokuRowHeader(new Triple<int>(i, j, content));
                                         AbstractDLinks.Node newNode = new AbstractDLinks.Node(newRow, curCol);
 
                                         if (tempRows.Contains(newRow))
                                         {
+                                            SudokuRowHeader firstNodeIndex = tempRows.Find(x => x.Equals(newRow));
+
+
                                             newRow.firstNode.left.right = newNode;
                                             newRow.firstNode.left = newNode;
                                         }
@@ -65,6 +70,8 @@ namespace Sudoku_Solver.SudokuDLinks
 
                                             if (tempRows.Contains(newRow))
                                             {
+                                                SudokuRowHeader firstNodeIndex = tempRows.Find(x => x.Equals(newRow));
+
                                                 newRow.firstNode.left.right = newNode;
                                                 newRow.firstNode.left = newNode;
                                             }
@@ -104,7 +111,7 @@ namespace Sudoku_Solver.SudokuDLinks
                                 for (int n = 1; n <= 9 && !isInCol ; n++)
                                 {
                                     int content;
-                                    int.TryParse(s.boxes[n, i].Text, out content);
+                                    int.TryParse(s.boxes[n - 1, i - 1].Text, out content);
 
                                     if (content == j)
                                     {
@@ -120,6 +127,8 @@ namespace Sudoku_Solver.SudokuDLinks
 
                                     if (tempRows.Contains(newRow))
                                     {
+                                        SudokuRowHeader firstNodeIndex = tempRows.Find(x => x.Equals(newRow));
+
                                         newRow.firstNode.left.right = newNode;
                                         newRow.firstNode.left = newNode;
                                     }
@@ -147,6 +156,8 @@ namespace Sudoku_Solver.SudokuDLinks
 
                                         if (tempRows.Contains(newRow))
                                         {
+                                            SudokuRowHeader firstNodeIndex = tempRows.Find(x => x.Equals(newRow));
+
                                             newRow.firstNode.left.right = newNode;
                                             newRow.firstNode.left = newNode;
                                         }
@@ -188,7 +199,7 @@ namespace Sudoku_Solver.SudokuDLinks
                                 for (int n = 1; n <= 9 && !isInRow ; n++)
                                 {
                                     int content;
-                                    int.TryParse(s.boxes[i, n].Text, out content);
+                                    int.TryParse(s.boxes[i-1, n-1].Text, out content);
 
                                     if (content == j)
                                     {
@@ -204,6 +215,8 @@ namespace Sudoku_Solver.SudokuDLinks
 
                                     if (tempRows.Contains(newRow))
                                     {
+                                        SudokuRowHeader firstNodeIndex = tempRows.Find(x => x.Equals(newRow));
+
                                         newRow.firstNode.left.right = newNode;
                                         newRow.firstNode.left = newNode;
                                     }
@@ -231,6 +244,8 @@ namespace Sudoku_Solver.SudokuDLinks
 
                                         if (tempRows.Contains(newRow))
                                         {
+                                            SudokuRowHeader firstNodeIndex = tempRows.Find(x => x.Equals(newRow));
+
                                             newRow.firstNode.left.right = newNode;
                                             newRow.firstNode.left = newNode;
                                         }
@@ -281,7 +296,7 @@ namespace Sudoku_Solver.SudokuDLinks
                                     {
                                         int content;
 
-                                        if (int.TryParse(s.boxes[SquareY * 3 + n, SquareX * 3 + m].Text, out content))
+                                        if (int.TryParse(s.boxes[SquareY * 3 + n - 1, SquareX * 3 + m - 1].Text, out content))
                                         {
                                             if (content == j)
                                             {
@@ -300,6 +315,8 @@ namespace Sudoku_Solver.SudokuDLinks
 
                                     if (tempRows.Contains(newRow))
                                     {
+                                        SudokuRowHeader firstNodeIndex = tempRows.Find(x => x.Equals(newRow));
+
                                         newRow.firstNode.left.right = newNode;
                                         newRow.firstNode.left = newNode;
                                     }
@@ -331,6 +348,8 @@ namespace Sudoku_Solver.SudokuDLinks
 
                                             if (tempRows.Contains(newRow))
                                             {
+                                                SudokuRowHeader firstNodeIndex = tempRows.Find(x => x.Equals(newRow));
+
                                                 newRow.firstNode.left.right = newNode;
                                                 newRow.firstNode.left = newNode;
                                             }
@@ -372,6 +391,10 @@ namespace Sudoku_Solver.SudokuDLinks
                 }
 
 
+            foreach (AbstractDLinks.RowHeader row in tempRows)
+            {
+                rows.Add(row);
+            }
         }
         
     }
