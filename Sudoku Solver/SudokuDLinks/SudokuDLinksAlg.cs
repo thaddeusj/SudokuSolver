@@ -41,8 +41,8 @@ namespace Sudoku_Solver.SudokuDLinks
                                             SudokuRowHeader firstNodeIndex = tempRows.Find(x => x.Equals(newRow));
 
 
-                                            newRow.firstNode.left.right = newNode;
-                                            newRow.firstNode.left = newNode;
+                                            firstNodeIndex.firstNode.left.right = newNode;
+                                            firstNodeIndex.firstNode.left = newNode;
                                         }
                                         else
                                         {
@@ -72,8 +72,8 @@ namespace Sudoku_Solver.SudokuDLinks
                                             {
                                                 SudokuRowHeader firstNodeIndex = tempRows.Find(x => x.Equals(newRow));
 
-                                                newRow.firstNode.left.right = newNode;
-                                                newRow.firstNode.left = newNode;
+                                                firstNodeIndex.firstNode.left.right = newNode;
+                                                firstNodeIndex.firstNode.left = newNode;
                                             }
                                             else
                                             {
@@ -129,8 +129,8 @@ namespace Sudoku_Solver.SudokuDLinks
                                     {
                                         SudokuRowHeader firstNodeIndex = tempRows.Find(x => x.Equals(newRow));
 
-                                        newRow.firstNode.left.right = newNode;
-                                        newRow.firstNode.left = newNode;
+                                        firstNodeIndex.firstNode.left.right = newNode;
+                                        firstNodeIndex.firstNode.left = newNode;
                                     }
                                     else
                                     {
@@ -158,8 +158,8 @@ namespace Sudoku_Solver.SudokuDLinks
                                         {
                                             SudokuRowHeader firstNodeIndex = tempRows.Find(x => x.Equals(newRow));
 
-                                            newRow.firstNode.left.right = newNode;
-                                            newRow.firstNode.left = newNode;
+                                            firstNodeIndex.firstNode.left.right = newNode;
+                                            firstNodeIndex.firstNode.left = newNode;
                                         }
                                         else
                                         {
@@ -217,8 +217,8 @@ namespace Sudoku_Solver.SudokuDLinks
                                     {
                                         SudokuRowHeader firstNodeIndex = tempRows.Find(x => x.Equals(newRow));
 
-                                        newRow.firstNode.left.right = newNode;
-                                        newRow.firstNode.left = newNode;
+                                        firstNodeIndex.firstNode.left.right = newNode;
+                                        firstNodeIndex.firstNode.left = newNode;
                                     }
                                     else
                                     {
@@ -246,8 +246,8 @@ namespace Sudoku_Solver.SudokuDLinks
                                         {
                                             SudokuRowHeader firstNodeIndex = tempRows.Find(x => x.Equals(newRow));
 
-                                            newRow.firstNode.left.right = newNode;
-                                            newRow.firstNode.left = newNode;
+                                            firstNodeIndex.firstNode.left.right = newNode;
+                                            firstNodeIndex.firstNode.left = newNode;
                                         }
                                         else
                                         {
@@ -284,7 +284,7 @@ namespace Sudoku_Solver.SudokuDLinks
                             case SudokuColumnHeader.ColumnType.Square:
 
                                 int SquareX = (i + 2) % 3;
-                                int SquareY = i/3;
+                                int SquareY = (i-1)/3;
 
                                 Pair<int> cell = new Pair<int>(0,0);
 
@@ -317,8 +317,8 @@ namespace Sudoku_Solver.SudokuDLinks
                                     {
                                         SudokuRowHeader firstNodeIndex = tempRows.Find(x => x.Equals(newRow));
 
-                                        newRow.firstNode.left.right = newNode;
-                                        newRow.firstNode.left = newNode;
+                                        firstNodeIndex.firstNode.left.right = newNode;
+                                        firstNodeIndex.firstNode.left = newNode;
                                     }
                                     else
                                     {
@@ -350,8 +350,8 @@ namespace Sudoku_Solver.SudokuDLinks
                                             {
                                                 SudokuRowHeader firstNodeIndex = tempRows.Find(x => x.Equals(newRow));
 
-                                                newRow.firstNode.left.right = newNode;
-                                                newRow.firstNode.left = newNode;
+                                                firstNodeIndex.firstNode.left.right = newNode;
+                                                firstNodeIndex.firstNode.left = newNode;
                                             }
                                             else
                                             {
