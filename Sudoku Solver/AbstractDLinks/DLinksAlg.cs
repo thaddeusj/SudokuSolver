@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace Sudoku_Solver.AbstractDLinks
 {
-    public delegate RowHeader RowChooser(ColumnHeader c, List<RowHeader> rows);
+    public delegate RowHeader RowChooser(List<RowHeader> rows);
     
 
     public abstract class DLinksAlg
@@ -15,11 +16,13 @@ namespace Sudoku_Solver.AbstractDLinks
         
 
         protected List<ColumnHeader> columns;
-        protected List<RowHeader> rows;
+        public List<RowHeader> rows;
 
         public bool DLSolve()
         {
             if (columns.Count == 0) return true;
+
+            //MessageBox.Show("Rows: " + rows.Count.ToString() + "\nConstraints: " + columns.Count);
 
             int minCount = columns.Min(x => x.memberCount);
             if (minCount == 0) return false;
@@ -39,7 +42,7 @@ namespace Sudoku_Solver.AbstractDLinks
 
             while (rowsToChoose.Count > 0)
             {
-                RowHeader currentRow = chooseRow(currentColumn, rowsToChoose);
+                RowHeader currentRow = chooseRow(rowsToChoose);
                 if (rowsToChoose.Contains(currentRow))
                 {
                     rowsToChoose.Remove(currentRow);
@@ -61,6 +64,12 @@ namespace Sudoku_Solver.AbstractDLinks
                             {
                                 rowRemNode.up.down = rowRemNode.down;
                                 rowRemNode.down.up = rowRemNode.up;
+
+                                if (rowRemNode == rowRemNode.column.firstNode) rowRemNode.column.firstNode = rowRemNode.down;
+
+                                rowRemNode.column.memberCount--;
+
+                                rowRemNode = rowRemNode.right;
                             }
 
                             if(rowNode.row != currentRow) rows.Remove(rowNode.row);
@@ -90,16 +99,19 @@ namespace Sudoku_Solver.AbstractDLinks
                             do
                             {
 
-
                                 Node rowRemNode = rowNode.right;
 
                                 while (rowRemNode != rowNode)
                                 {
                                     rowRemNode.up.down = rowRemNode;
                                     rowRemNode.down.up = rowRemNode;
+
+                                    rowRemNode.column.memberCount++;
+                                    rowRemNode = rowRemNode.right;
+
                                 }
 
-                                if (rowNode.row != currentRow) rows.Add(rowNode.row);
+                                if (rowNode.row != currentRow && !rows.Contains(rowNode.row)) rows.Add(rowNode.row);
                                 rowNode = rowNode.down;
 
                             } while (rowNode != columnNode.column.firstNode);
@@ -109,12 +121,7 @@ namespace Sudoku_Solver.AbstractDLinks
                             columns.Add(columnNode.column);
                             columnNode = columnNode.right;
 
-
                         } while (columnNode != currentRow.firstNode);
-
-
-
-
                     }
                 }
             }

@@ -231,6 +231,16 @@ namespace Sudoku_Solver
 
             SudokuDLinks.SudokuDLinksAlg s = new SudokuDLinks.SudokuDLinksAlg(gr);
 
+            MessageBox.Show(s.rows.Count.ToString());
+            s.DLSolve();
+
+            if (s.rows.Count == 81) MessageBox.Show("Hurrah!");
+            else MessageBox.Show(s.rows.Count.ToString());
+
+            foreach (SudokuDLinks.SudokuRowHeader row in s.rows)
+            {
+                gr.boxes[row.cellLabel.Item1 - 1, row.cellLabel.Item2 - 1].Text = row.cellLabel.Item3.ToString();
+            }
 
             //d.dancingLinksAlg();
 
