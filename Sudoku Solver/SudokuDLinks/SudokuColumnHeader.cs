@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Sudoku_Solver.SudokuDLinks
 {
-    public class SudokuColumnHeader : AbstractDLinks.ColumnHeader
+    public class SudokuColumnHeader : AbstractDLinks.ColumnHeader, IEquatable<SudokuColumnHeader>
     {
         public enum ColumnType { Cell, Row, Column, Square };
 
@@ -21,5 +21,10 @@ namespace Sudoku_Solver.SudokuDLinks
         public SudokuColumnHeader(ColumnType t, Pair<int> constraints) { type = t; constraintNum = constraints; }
 
 
+
+        public bool Equals(SudokuColumnHeader other)
+        {
+            return (other.type.Equals(type) && other.constraintNum.Equals(constraintNum));
+        }
     }
 }
