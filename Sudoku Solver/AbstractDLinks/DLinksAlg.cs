@@ -15,8 +15,9 @@ namespace Sudoku_Solver.AbstractDLinks
         public RowChooser chooseRow;
         
 
-        protected List<ColumnHeader> columns;
+        public List<ColumnHeader> columns;
         public List<RowHeader> rows;
+        public List<RowHeader> partialSolution;
 
         public bool DLSolve()
         {
@@ -42,44 +43,21 @@ namespace Sudoku_Solver.AbstractDLinks
 
             while (rowsToChoose.Count > 0)
             {
+                int colBefore = columns.Count;
+                int rowBefore = rows.Count;
+
                 RowHeader currentRow = chooseRow(rowsToChoose);
                 if (rowsToChoose.Contains(currentRow))
                 {
                     rowsToChoose.Remove(currentRow);
 
-
                     Node columnNode = currentRow.firstNode; //Indexes the column we're working on
+
+                    partialSolution.Add(currentRow);
 
                     do
                     {
-                        Node rowNode = columnNode.column.firstNode; //Indexes the row within the column
-
-                        do
-                        {
-
-
-                            Node rowRemNode = rowNode.right;
-
-                            while (rowRemNode != rowNode)
-                            {
-                                rowRemNode.up.down = rowRemNode.down;
-                                rowRemNode.down.up = rowRemNode.up;
-
-                                if (rowRemNode == rowRemNode.column.firstNode) rowRemNode.column.firstNode = rowRemNode.down;
-
-                                rowRemNode.column.memberCount--;
-
-                                rowRemNode = rowRemNode.right;
-                            }
-
-                            if(rowNode.row != currentRow) rows.Remove(rowNode.row);
-                            rowNode = rowNode.down;
-
-                        } while (rowNode != columnNode.column.firstNode);
-
-
-
-                        columns.Remove(columnNode.column);
+                        constraintRemove(columnNode.column);
                         columnNode = columnNode.right;
 
 
@@ -91,37 +69,17 @@ namespace Sudoku_Solver.AbstractDLinks
                         //Reverse the above process.
 
                         columnNode = currentRow.firstNode; //Indexes the column we're working on
+                        partialSolution.Remove(currentRow);
 
                         do
                         {
-                            Node rowNode = columnNode.column.firstNode; //Indexes the row within the column
-
-                            do
-                            {
-
-                                Node rowRemNode = rowNode.right;
-
-                                while (rowRemNode != rowNode)
-                                {
-                                    rowRemNode.up.down = rowRemNode;
-                                    rowRemNode.down.up = rowRemNode;
-
-                                    rowRemNode.column.memberCount++;
-                                    rowRemNode = rowRemNode.right;
-
-                                }
-
-                                if (rowNode.row != currentRow && !rows.Contains(rowNode.row)) rows.Add(rowNode.row);
-                                rowNode = rowNode.down;
-
-                            } while (rowNode != columnNode.column.firstNode);
-
-
-
-                            columns.Add(columnNode.column);
+                            constraintAdd(columnNode.column);
                             columnNode = columnNode.right;
 
                         } while (columnNode != currentRow.firstNode);
+
+                        if (columns.Count != colBefore) throw new Exception();
+                        if (rows.Count != rowBefore) throw new Exception();
                     }
                 }
             }
@@ -131,5 +89,74 @@ namespace Sudoku_Solver.AbstractDLinks
         }
 
 
+        public void constraintRemove(ColumnHeader c)
+        {
+            Node rowMarker = c.firstNode;
+
+            do
+            {
+
+                Node rowRemovalNode = rowMarker.right;
+
+                if (rows.Contains(rowMarker.row))
+                {
+                    while (rowRemovalNode != rowMarker)
+                    {
+
+                        rowRemovalNode.up.down = rowRemovalNode.down;
+                        rowRemovalNode.down.up = rowRemovalNode.up;
+
+                        rowRemovalNode.column.memberCount--;
+
+                        if (rowRemovalNode == rowRemovalNode.column.firstNode) rowRemovalNode.column.firstNode = rowRemovalNode.up;
+
+                        rowRemovalNode = rowRemovalNode.right;
+
+                    }
+                    rows.Remove(rowMarker.row);
+                }
+
+                //rowMarker.left.right = rowMarker.right;
+                //rowMarker.right.left = rowMarker.left;
+
+                rowMarker = rowMarker.down;
+
+            } while (rowMarker != c.firstNode);
+
+            columns.Remove(c);
+        }
+
+        public void constraintAdd(ColumnHeader c)
+        {
+            Node rowMarker = c.firstNode;
+
+            do
+            {
+
+                Node rowAddNode = rowMarker.right;
+
+                if (!rows.Contains(rowMarker.row))
+                {
+                    while (rowAddNode != rowMarker)
+                    {
+
+                        rowAddNode.up.down = rowAddNode;
+                        rowAddNode.down.up = rowAddNode;
+
+                        rowAddNode.column.memberCount++;
+
+                        rowAddNode = rowAddNode.right;
+                    }
+                    if(!rows.Contains(rowMarker.row)) rows.Add(rowMarker.row);
+                }
+
+                //rowMarker.left.right = rowMarker;
+                //rowMarker.right.left = rowMarker;
+                rowMarker = rowMarker.down;
+
+            } while (rowMarker != c.firstNode);
+
+            if (!columns.Contains(c)) columns.Add(c);
+        }
     }
 }

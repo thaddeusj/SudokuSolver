@@ -26,5 +26,10 @@ namespace Sudoku_Solver.SudokuDLinks
         {
             return (other.type.Equals(type) && other.constraintNum.Equals(constraintNum));
         }
+
+        public override string ToString()
+        {
+            return type.ToString() + " " + constraintNum.Item1 + "," + constraintNum.Item2;
+        }
     }
 }
